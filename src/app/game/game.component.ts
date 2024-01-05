@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Game } from '../../models/game';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
+import { GameListService } from '../firebase-services/game.service';
 
 @Component({
   selector: 'app-game',
@@ -15,7 +16,7 @@ export class GameComponent implements OnInit {
   currentCard: string | undefined = undefined;
   game: Game;
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, private GameService: GameListService) {
     this.game = new Game();
   }
 
@@ -23,9 +24,16 @@ export class GameComponent implements OnInit {
     this.newGame();
   }
 
-  newGame() {
+  async newGame() {
     this.game = new Game();
     console.log(this.game);
+    if (this.game.toJSON) {
+      let gameData = this.game.toJSON();
+      if (gameData.id === undefined) {
+        delete gameData.id;
+      }
+      await this.GameService.addGame(gameData);
+    }
   }
 
   takeCard() {
@@ -33,7 +41,7 @@ export class GameComponent implements OnInit {
       this.currentCard = this.game.stack.pop();
       this.pickCardAnimation = true;
 
-      if(!this.game.currentPlayer) {
+      if (!this.game.currentPlayer) {
         this.game.currentPlayer = 0;
       }
       this.game.currentPlayer++;
@@ -50,7 +58,7 @@ export class GameComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
-      if(name && name.length > 0) {
+      if (name && name.length > 0) {
         this.game.players.push(name);
       }
     });

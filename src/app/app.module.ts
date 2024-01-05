@@ -38,7 +38,8 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     MatDialogModule,
     MatFormFieldModule, 
     MatInputModule, 
-    FormsModule, provideFirebaseApp(() => initializeApp({"projectId":"ring-of-fire-8cbc5","appId":"1:104821536968:web:67d3ba9b0b0f4138844dfd","storageBucket":"ring-of-fire-8cbc5.appspot.com","apiKey":"AIzaSyBGSwwm4-KUOjiyVoaSFe_Vvy9Bj4dhbc8","authDomain":"ring-of-fire-8cbc5.firebaseapp.com","messagingSenderId":"104821536968"})), provideFirestore(() => getFirestore()), 
+    FormsModule, 
+    provideFirebaseApp(() => initializeApp({"projectId":"ring-of-fire-8cbc5","appId":"1:104821536968:web:67d3ba9b0b0f4138844dfd","storageBucket":"ring-of-fire-8cbc5.appspot.com","apiKey":"AIzaSyBGSwwm4-KUOjiyVoaSFe_Vvy9Bj4dhbc8","authDomain":"ring-of-fire-8cbc5.firebaseapp.com","messagingSenderId":"104821536968"})), provideFirestore(() => getFirestore()), 
   ],
   providers: [
     provideClientHydration()
