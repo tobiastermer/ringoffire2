@@ -5,6 +5,8 @@ export class Game {
     public stack: string[] = [];
     public playedCards: (string | undefined)[] = [];
     public currentPlayer: number = 0;
+    public pickCardAnimation: boolean = false;
+    public currentCard: string | undefined = '';
 
     constructor() {
         for (let i = 1; i <= 13; i++) {
@@ -18,13 +20,20 @@ export class Game {
     }
 
     public toJSON?() {
-        return {
-            id: this.id,
+        const jsonObj: any = {
             players: this.players,
             stack: this.stack,
             playedCards: this.playedCards, 
             currentPlayer: this.currentPlayer,
+            pickCardAnimation: this.pickCardAnimation,
+            currentCard: this.currentCard,
+        };
+
+        if (this.id !== undefined) {
+            jsonObj.id = this.id;
         }
+
+        return jsonObj;
     }
 }
 

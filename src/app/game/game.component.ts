@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Game } from '../../models/game';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameListService } from '../firebase-services/game.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -10,47 +11,60 @@ import { GameListService } from '../firebase-services/game.service';
   styleUrl: './game.component.scss'
 })
 
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
 
-  pickCardAnimation = false;
-  currentCard: string | undefined = undefined;
   game: Game;
 
-  constructor(public dialog: MatDialog, private GameService: GameListService) {
+  private gameSubscription?: () => void;
+
+  constructor(public dialog: MatDialog, private GameService: GameListService, private route: ActivatedRoute) {
     this.game = new Game();
+    console.log(this.game);
+
   }
 
   ngOnInit(): void {
     this.newGame();
+    this.route.params.subscribe(async (params) => {
+      if (params['id']) {
+        this.gameSubscription = await this.GameService.callGame(params['id']);
+        this.GameService.currentGame.subscribe(game => {
+          if (game) {
+            this.game = game;
+          }
+        });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.gameSubscription) {
+      this.gameSubscription(); // Beendet das Abonnement, wenn es definiert ist
+    }
   }
 
   async newGame() {
     this.game = new Game();
     console.log(this.game);
-    if (this.game.toJSON) {
-      let gameData = this.game.toJSON();
-      if (gameData.id === undefined) {
-        delete gameData.id;
-      }
-      await this.GameService.addGame(gameData);
-    }
   }
 
-  takeCard() {
-    if (!this.pickCardAnimation) {
-      this.currentCard = this.game.stack.pop();
-      this.pickCardAnimation = true;
-
+  async takeCard() {
+    if (!this.game.pickCardAnimation) {
+      this.game.currentCard = this.game.stack.pop();
+      this.game.pickCardAnimation = true;
       if (!this.game.currentPlayer) {
         this.game.currentPlayer = 0;
       }
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
+      this.saveGame();
 
       setTimeout(() => {
-        this.game.playedCards.push(this.currentCard);
-        this.pickCardAnimation = false;
+        this.game.playedCards.push(this.game.currentCard);
+        this.game.pickCardAnimation = false;
+        this.saveGame();
       }, 1500);
+
     }
   }
 
@@ -60,8 +74,15 @@ export class GameComponent implements OnInit {
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name && name.length > 0) {
         this.game.players.push(name);
+        this.saveGame();
       }
     });
+  }
+
+  saveGame(): void {
+    if (this.game.toJSON) {
+      this.GameService.updateGame(this.game.toJSON());
+    }
   }
 
 }
