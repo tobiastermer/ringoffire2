@@ -18,6 +18,8 @@ import { GameInfoComponent } from './game-info/game-info.component';
 import { StartscreenComponent } from './startscreen/startscreen.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { PlayerMobileComponent } from './player-mobile/player-mobile.component';
+import { DialogEditPlayerComponent } from './dialog-edit-player/dialog-edit-player.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     GameInfoComponent,
     StartscreenComponent,
     DialogAddPlayerComponent,
+    PlayerMobileComponent,
+    DialogEditPlayerComponent,
   ],
   imports: [
     BrowserModule,

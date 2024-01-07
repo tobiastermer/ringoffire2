@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, collectionData, query, where, limit, orderBy, onSnapshot, addDoc, getDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { Game } from './../../models/game'
 import { BehaviorSubject } from 'rxjs';
 
@@ -19,7 +18,6 @@ export class GameListService {
     async addNewGame(item: {}) {
         try {
             const docRef = await addDoc(collection(this.firestore, "games"), item);
-            console.log("Document written with ID: ", docRef.id);
             return docRef.id;
         } catch (err) {
             console.error(err);
@@ -35,7 +33,6 @@ export class GameListService {
                 const gameData = docSnapshot.data();
                 const game = this.setGameObject(gameData, docId);
                 this.currentGameSubject.next(game); // Aktualisieren des aktuellen Spiels
-                console.log("Aktualisiertes Spiel:", game);
                 // Hier können Sie zusätzliche Logik einfügen, z.B. das Spiel-Objekt an eine Observable senden
             } else {
                 console.log("Kein solches Dokument!");
@@ -51,8 +48,6 @@ export class GameListService {
             await updateDoc(docRef, this.getCleanJSON(game)).catch(
                 (err) => { console.log(err); }
             )
-            console.log("Update erfolgt");
-            console.log("Aktualisiertes Spiel:", game);
         }
     }
 
@@ -66,6 +61,7 @@ export class GameListService {
         return {
             id: game.id,
             players: game.players,
+            playerImages: game.playerImages,
             stack: game.stack,
             playedCards: game.playedCards,
             currentPlayer: game.currentPlayer,
@@ -87,6 +83,7 @@ export class GameListService {
         const game = new Game();
         game.id = id;
         game.players = obj.players || [];
+        game.playerImages = obj.playerImages || [];
         game.stack = obj.stack || [];
         game.playedCards = obj.playedCards || [];
         game.currentPlayer = obj.currentPlayer || 0;

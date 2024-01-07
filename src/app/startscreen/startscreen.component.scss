@@ -1,6 +1,7 @@
 .start-screen {
     height: 100vh;
-    width: 100%vw;
+    overflow: hidden;
+    width: 100vw;
     max-width: 100%;
     background-color: #404040;
     display: flex;

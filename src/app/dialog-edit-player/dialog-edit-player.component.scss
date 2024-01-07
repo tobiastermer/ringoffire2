@@ -1,0 +1,15 @@
+.avatar-container {
+    display: flex;
+}
+
+.profile-picture {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    margin:16px;
+
+    &:hover {
+        cursor: pointer;
+        filter: brightness(1.15);
+    }
+}

@@ -2,6 +2,7 @@ export class Game {
 
     public id?: string;
     public players: string[] = [    ];
+    public playerImages: string[] = [];
     public stack: string[] = [];
     public playedCards: (string | undefined)[] = [];
     public currentPlayer: number = 0;
@@ -22,6 +23,7 @@ export class Game {
     public toJSON?() {
         const jsonObj: any = {
             players: this.players,
+            playerImages: this.playerImages,
             stack: this.stack,
             playedCards: this.playedCards, 
             currentPlayer: this.currentPlayer,
